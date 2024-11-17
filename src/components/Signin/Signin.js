@@ -18,6 +18,8 @@ class Signin extends React.Component {
   };
 
   onSubmitSignIn = () => {
+    console.log("Email:", this.state.signInEmail);
+    console.log("Password:", this.state.signInPassword);
     fetch("https://mybackend-wjym.onrender.com/signin", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -26,13 +28,62 @@ class Signin extends React.Component {
         password: this.state.signInPassword,
       }),
     })
-      .then((response) => response.json())
-      .then((user) => {
-        if (user.id) {
-          this.props.loadUser(user);
-          this.props.onRouteChange("home");
+      .then((response) => {
+        if (!response.ok) {
+          // Log status and throw an error if response is not OK
+          console.error(
+            "Error with response:",
+            response.status,
+            response.statusText
+          );
+          throw new Error("Failed to sign in.");
         }
-      });
+        return response.json();
+      })
+      .then((user) => {
+        console.log("Response user:", user); // Log the response for debugging
+        if (user.id) {
+          this.props.loadUser(user); // Proceed only if user has an ID
+          this.props.onRouteChange("home");
+        } else {
+          console.error("Sign in failed: User not found.");
+        }
+      })
+      .catch((error) => console.error("Error during fetch:", error));
+
+    fetch(
+      "postgresql://face_reco_db_6iyn_user:p3dIEPRH3ZuqmMw4217rGlZt4TYdfMfX@dpg-css6vbi3esus739in04g-a.oregon-postgres.render.com/signin",
+      {
+        method: "post",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: this.state.signInEmail,
+          password: this.state.signInPassword,
+        }),
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          // Log status and throw an error if response is not OK
+          console.error(
+            "Error with response:",
+            response.status,
+            response.statusText
+          );
+          throw new Error("Failed to sign in.");
+        }
+        return response.json();
+      })
+      .then((user) => {
+        console.log("Response user:", user); // Log the response for debugging
+        if (user.id) {
+          this.props.loadUser(user); // Proceed only if user has an ID
+          this.props.onRouteChange("home");
+        } else {
+          console.error("Sign in failed: User not found.");
+        }
+      })
+      .catch((error) => console.error("Error during fetch:", error));
   };
 
   render() {
