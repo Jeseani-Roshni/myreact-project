@@ -51,17 +51,14 @@ class Signin extends React.Component {
       })
       .catch((error) => console.error("Error during fetch:", error));
 
-    fetch(
-      "postgresql://face_reco_db_6iyn_user:p3dIEPRH3ZuqmMw4217rGlZt4TYdfMfX@dpg-css6vbi3esus739in04g-a.oregon-postgres.render.com/signin",
-      {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: this.state.signInEmail,
-          password: this.state.signInPassword,
-        }),
-      }
-    )
+    fetch("https://mybackend-wjym.onrender.com/signin", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: this.state.signInEmail,
+        password: this.state.signInPassword,
+      }),
+    })
       .then((response) => {
         if (!response.ok) {
           // Log status and throw an error if response is not OK
